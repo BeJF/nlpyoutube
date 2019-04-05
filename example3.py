@@ -6,7 +6,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 api_service_name = "youtube"
 api_version = "v3"
-DEVELOPER_KEY = "AIzaSyCzLzeKOj6Ovz7sT06DYG1Lc9v_uXgKmFE"
+DEVELOPER_KEY = ""
 youtube = googleapiclient.discovery.build(
                 api_service_name, api_version, developerKey = DEVELOPER_KEY)
 video_id = "gmsWMb9ex9w"
