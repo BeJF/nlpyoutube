@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
 import nltk
-#nltk.download("stopwords")
+#nltk.download("punkt")
 
 ps = PorterStemmer()
 
@@ -44,26 +44,46 @@ for comment in comments_list :
 
 all_words = []
 
+#make a general function of that
 for comment in comments_tokenized :
     for word in comment :
         all_words.append(word)
 
 all_words = nltk.FreqDist(all_words)
-#print("\n", all_words.most_common(100))
+print("\n", all_words.most_common(100))
 
 most_commons = [w[0] for w in all_words.most_common(10)]
-print('\n', most_commons)
+#print('\n', most_commons)
 
 usefull_comments = []
 
-for comment in comments_list :
+#make a general function of that
+for comment in comments_tokenized :
+	if "camera" in comment and "oneplus" in comment:
+		usefull_comments.append(comment)
+	'''for word in most_commons :
+		if word in comment :
+			usefull_comments.append(comment)
+			break'''
+'''for comment in comments_list :
     for word in most_commons :
-        if contain_word(comment, word) == 1 :
-            #print(word)
+        #if contain_word(comment, word) == 1 :
+        if contain_word(comment, "camera") == 1 and contain_word(comment, "0:57") == 0:
+			#print(word)
             #print(comment)
             usefull_comments.append(comment)
-            break
+            break'''
 
-#print(usefull_comments)
+part_words = []
+
+for comment in usefull_comments :
+	for word in comment :
+		part_words.append(word)
+
+#print(part_words)
+part_words = nltk.FreqDist(part_words)
+print("\n", part_words.most_common(100))
+
+print(usefull_comments)
 print(len(comments_list))
 print(len(usefull_comments))

@@ -30,7 +30,7 @@ def load_comments(match, comments_list):
 def get_comment_thread(youtube, video_id, next_page_token):
     results = youtube.commentThreads().list(
         part="snippet",
-        maxResults=50,
+        maxResults=100,
         videoId=video_id,
         textFormat="plainText",
         pageToken=next_page_token
@@ -43,7 +43,7 @@ comments_list = []
 # First call to the API. Max results can be modified.
 results = youtube.commentThreads().list(
         part="snippet",
-        maxResults=50,
+        maxResults=100,
         videoId=video_id,
         textFormat="plainText",
     ).execute()

@@ -14,3 +14,4 @@ Ideas :
 !Secu : enlever ma clef API
 
 ajouter toutes les sources: dataquest, sentdex etc
+ajouter steps to install lib (google api, nltk))
