@@ -12,6 +12,10 @@ comments_list = []
 filtered_sentence = []
 comments_tokenized = []
 
+
+def contain_word(s, w):
+    return (' ' + w + ' ') in (' ' + s + ' ')
+
 # Open the file with comments and store it in a list of string.
 with open("comments.txt", "r") as f :
     comments_list=f.read().splitlines()
@@ -45,7 +49,21 @@ for comment in comments_tokenized :
         all_words.append(word)
 
 all_words = nltk.FreqDist(all_words)
-print("\n", all_words.most_common(100))
+#print("\n", all_words.most_common(100))
 
-most_commons = [w[0] for w in all_words.most_common(100)]
+most_commons = [w[0] for w in all_words.most_common(10)]
 print('\n', most_commons)
+
+usefull_comments = []
+
+for comment in comments_list :
+    for word in most_commons :
+        if contain_word(comment, word) == 1 :
+            #print(word)
+            #print(comment)
+            usefull_comments.append(comment)
+            break
+
+#print(usefull_comments)
+print(len(comments_list))
+print(len(usefull_comments))
