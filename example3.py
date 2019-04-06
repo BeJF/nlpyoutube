@@ -1,4 +1,9 @@
 import os
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+
+#import nltk
+#nltk.download("stopwords")
 
 import googleapiclient.discovery
 
@@ -35,17 +40,18 @@ def get_comment_thread(youtube, video_id, next_page_token):
     return results
 
 comments_list = []
+filtered_sentence = []
 
 results = youtube.commentThreads().list(
         part="snippet",
-        maxResults=50,
+        maxResults=5,
         videoId=video_id,
         textFormat="plainText",
     ).execute()
 next_page_token = results["nextPageToken"]
 load_comments(results, comments_list)
 
-while next_page_token:
+'''while next_page_token:
 
     match = get_comment_thread(youtube, video_id, next_page_token)
     print("nb of comments = ", len(comments_list))
@@ -53,6 +59,24 @@ while next_page_token:
         next_page_token = match["nextPageToken"]
     else :
         break
-    load_comments(match, comments_list)
+    load_comments(match, comments_list)'''
 
 print(comments_list)
+
+stop_words = set(stopwords.words("french")) #peut ajouter plus de stopwords
+print(stop_words)
+comments_tokenized = []
+
+#quid qd plusieurs phrases dans un comment
+
+for comment in comments_list :
+    sentence = word_tokenize(comment)
+    filtered_sentence = [w for w in sentence if not w in stop_words]
+    '''for word in sentence :
+        if word not in stop_words :
+            filtered_sentence.append(word)'''
+    comments_tokenized.append(filtered_sentence)
+    #print(word_tokenize(comment))
+    #print(sent_tokenize(comment))'''
+
+print(comments_tokenized)
