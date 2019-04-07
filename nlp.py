@@ -44,24 +44,37 @@ for comment in comments_list :
 
 all_words = []
 
-#make a general function of that
-for comment in comments_tokenized :
-    for word in comment :
-        all_words.append(word)
 
-all_words = nltk.FreqDist(all_words)
-print("\n", all_words.most_common(100))
+def list_words(sentences):
+    words = []
+    for sentence in sentences :
+        for word in sentence :
+            words.append(word)
+    return (words)
 
-most_commons = [w[0] for w in all_words.most_common(10)]
+all_words = list_words(comments_tokenized)
+distribution = nltk.FreqDist(all_words)
+print("\n", distribution.most_common(100))
+
+most_commons = [w[0] for w in distribution.most_common(10)]
 #print('\n', most_commons)
 
 usefull_comments = []
 
 #make a general function of that
-for comment in comments_tokenized :
+
+def find_comments(include, exclude, comments) :
+    usefull_comments = []
+    for comment in comments :
+        if all(inc in comment for inc in include):
+            if all(exc not in comment for exc in exclude):
+                usefull_comments.append(comment)
+    return (usefull_comments)
+
+'''for comment in comments_tokenized :
 	if "camera" in comment and "oneplus" in comment:
 		usefull_comments.append(comment)
-	'''for word in most_commons :
+	for word in most_commons :
 		if word in comment :
 			usefull_comments.append(comment)
 			break'''
@@ -83,6 +96,8 @@ for comment in usefull_comments :
 #print(part_words)
 part_words = nltk.FreqDist(part_words)
 print("\n", part_words.most_common(100))
+
+usefull_comments = find_comments(["camera"], ["oneplus"], comments_tokenized)
 
 print(usefull_comments)
 print(len(comments_list))
