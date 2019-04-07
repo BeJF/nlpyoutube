@@ -5,46 +5,22 @@ from nltk.stem import PorterStemmer
 import nltk
 #nltk.download("punkt")
 
-ps = PorterStemmer()
-
-#Initialize lists
-comments_list = []
-filtered_sentence = []
-comments_tokenized = []
-
+#ps = PorterStemmer()
 
 def contain_word(s, w):
     return (' ' + w + ' ') in (' ' + s + ' ')
 
-# Open the file with comments and store it in a list of string.
-with open("comments.txt", "r") as f :
-    comments_list=f.read().splitlines()
-#print("Comments => \n\n", comments_list, "\n")
-
-# Set a list of stop words. Used to filter the comments. Can add more of common words.
-stop_words = set(stopwords.words("english"))
-#print("Stop words => \n\n", stop_words, "\n")
-
 # Each comment is tokenized. We have a list of list of words. We filter out the stopwords in the same time.
 # => what to do with comments with multiple sentences?
-#print("Tokenized sentences => \n") 
-for comment in comments_list :
-    sentence = word_tokenize(comment)
-    #try for stemming but bug
-    '''for word in sentence :
-        
-        word = word.lower()
-        #word = ps.stem(word)
-        print(word)
-        if not word in stop_words and word.isalpha() :
-            filtered_sentence.append(ps.stem(word))'''
-    filtered_sentence = [w.lower() for w in sentence if not w.lower() in stop_words and w.isalpha()]
-    comments_tokenized.append(filtered_sentence)
-    #print(filtered_sentence, "\n")
-
-all_words = []
-
-
+def filter_tokenize(comments) :
+    #could add stemming
+    comments_tokenized = []
+    for comment in comments :
+        tokenized = word_tokenize(comment)
+        filtered = [w.lower() for w in tokenized if not w.lower() in stop_words and w.isalpha()]
+        comments_tokenized.append(filtered)
+    return (comments_tokenized)
+    
 def list_words(sentences):
     words = []
     for sentence in sentences :
@@ -52,17 +28,14 @@ def list_words(sentences):
             words.append(word)
     return (words)
 
-all_words = list_words(comments_tokenized)
-distribution = nltk.FreqDist(all_words)
-print("\n", distribution.most_common(100))
+def get_common_words(comments, nb_words) :
+    words = list_words(comments)
+    distribution = nltk.FreqDist(words)
+    print("Words distribution = \n", distribution.most_common(nb_words), "\n")
+    most_common = [w[0] for w in distribution.most_common(nb_words)]
+    return (most_common)
 
-most_commons = [w[0] for w in distribution.most_common(10)]
-#print('\n', most_commons)
-
-usefull_comments = []
-
-#make a general function of that
-
+# Doesnt work the same if tokenized or not. Token: camera. No tokens: camera + cameraman. Stemming would change that.
 def find_comments(include, exclude, comments) :
     usefull_comments = []
     for comment in comments :
@@ -71,34 +44,42 @@ def find_comments(include, exclude, comments) :
                 usefull_comments.append(comment)
     return (usefull_comments)
 
-'''for comment in comments_tokenized :
-	if "camera" in comment and "oneplus" in comment:
-		usefull_comments.append(comment)
-	for word in most_commons :
-		if word in comment :
-			usefull_comments.append(comment)
-			break'''
-'''for comment in comments_list :
-    for word in most_commons :
-        #if contain_word(comment, word) == 1 :
-        if contain_word(comment, "camera") == 1 and contain_word(comment, "0:57") == 0:
-			#print(word)
-            #print(comment)
-            usefull_comments.append(comment)
-            break'''
+def print_list(list) :
+    i = 0
+    for item in list :
+        i += 1
+        print(i,":",item)
 
-part_words = []
+# Open the file with comments and store it in a list of string.
+with open("comments.txt", "r") as f :
+    all_comments=f.read().splitlines()
+#print("Comments => \n\n", all_comments, "\n")
 
-for comment in usefull_comments :
-	for word in comment :
-		part_words.append(word)
+# Set a list of stop words. Used to filter the comments. Can add more of common words.
+stop_words = set(stopwords.words("english"))
+#print("Stop words => \n\n", stop_words, "\n")
 
-#print(part_words)
-part_words = nltk.FreqDist(part_words)
-print("\n", part_words.most_common(100))
+comments_tokenized = filter_tokenize(all_comments)
 
-usefull_comments = find_comments(["camera"], ["oneplus"], comments_tokenized)
+most_common = get_common_words(comments_tokenized, 10)
+print("Most common words = \n", most_common, "\n")
 
-print(usefull_comments)
-print(len(comments_list))
-print(len(usefull_comments))
+include = ["like"]
+exclude = []
+usefull_comments = find_comments(include, exclude, all_comments)
+
+most_common2 = get_common_words(filter_tokenize(usefull_comments), 10)
+print("Most common words 2 = \n", most_common2, "\n")
+
+
+include2 = ["phone"]
+exclude2 = []
+usefull_comments2 = find_comments(include2, exclude2, usefull_comments)
+most_common3 = get_common_words(filter_tokenize(usefull_comments2), 10)
+print("Most common words 3 = \n", most_common3, "\n")
+
+
+#print_list(usefull_comments)
+#print(usefull_comments)
+print("Number of all comments=", len(all_comments))
+print("Number of selected comments=", len(usefull_comments))
